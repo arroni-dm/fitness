@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en" class="dark scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      (function () {
+        try {
+          var desc = Object.getOwnPropertyDescriptor(window, 'fetch');
+          if (desc && desc.get && !desc.set && desc.configurable) {
+            var currentFetch = window.fetch.bind(window);
+            Object.defineProperty(window, 'fetch', {
+              configurable: true,
+              enumerable: desc.enumerable,
+              get: function () {
+                return currentFetch;
+              },
+              set: function (fn) {
+                if (typeof fn === 'function') {
+                  currentFetch = fn;
+                }
+              },
+            });
+          }
+        } catch (_e) {}
+        window.addEventListener(
+          'error',
+          function (e) {
+            if (e && typeof e.filename === 'string' && e.filename.indexOf('chrome-extension://') === 0) {
+              e.stopImmediatePropagation();
+              e.preventDefault();
+            }
+          },
+          true
+        );
+      })();
+    </script>
+    <title>Online Personal Fitness Coaching — Structured Plans &amp; Remote Support</title>
+    <meta
+      name="description"
+      content="Get personalized online fitness coaching built around your goals, lifestyle, and schedule. Request a free fitness consultation and structured training plan."
+    />
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:title"
+      content="Online Personal Fitness Coaching — Structured Plans &amp; Remote Support"
+    />
+    <meta
+      property="og:description"
+      content="Get personalized online fitness coaching built around your goals, lifestyle, and schedule. Request a free fitness consultation and structured training plan."
+    />
+    <meta property="og:site_name" content="Online Personal Fitness Coaching" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="Online Personal Fitness Coaching — Structured Plans &amp; Remote Support"
+    />
+    <meta
+      name="twitter:description"
+      content="Get personalized online fitness coaching built around your goals, lifestyle, and schedule. Request a free fitness consultation and structured training plan."
+    />
+    <meta name="theme-color" content="#0B0D0B" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=JetBrains+Mono:wght@500&family=Manrope:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-[#0B0D0B] text-[#F7F8F5] antialiased selection:bg-[#C6FF00] selection:text-[#0B0D0B]">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

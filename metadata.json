@@ -1,0 +1,6 @@
+{
+  "name": "Apex Form — Online Personal Fitness Coaching",
+  "description": "Personalized online fitness coaching platform built around your goals, lifestyle, and schedule with structured training plans and consultation booking.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
