@@ -3,15 +3,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useEffect } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { MotionConfig } from 'motion/react';
 import { initializeAnalyticsIfPermitted } from './lib/analytics';
 import { SiteConfigProvider, useSiteConfig } from './lib/SiteConfigContext';
-import { Home } from './pages/Home';
-import { NotFound } from './pages/NotFound';
-import { PrivacyPolicy } from './pages/PrivacyPolicy';
-import { Terms } from './pages/Terms';
+const Home = lazy(() => import('./pages/Home').then((module) => ({ default: module.Home })));
+const NotFound = lazy(() => import('./pages/NotFound').then((module) => ({ default: module.NotFound })));
+const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy').then((module) => ({ default: module.PrivacyPolicy })));
+const Terms = lazy(() => import('./pages/Terms').then((module) => ({ default: module.Terms })));
 
 function SeoAndAnalyticsSync() {
   const { config } = useSiteConfig();
@@ -69,12 +69,14 @@ export default function App() {
       <BrowserRouter>
         <SiteConfigProvider>
           <SeoAndAnalyticsSync />
+          <Suspense fallback={<div role="status" aria-live="polite">Loading...</div>}>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
+          </Suspense>
         </SiteConfigProvider>
       </BrowserRouter>
     </MotionConfig>
