@@ -2,6 +2,7 @@ import 'dotenv/config';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import express from 'express';
+import { createServer } from 'node:http';
 import { leadsRouter } from './server/routes/leads.ts';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -41,9 +42,35 @@ async function startServer() {
     });
   }
 
-  app.listen(PORT, '0.0.0.0', () => {
-    console.info(`Server running on http://0.0.0.0:${PORT}`);
-  });
+  const server = createServer(app);
+  const maxAttempts = process.env.NODE_ENV === 'production' ? 1 : 20;
+
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    const port = PORT + attempt;
+    try {
+      await new Promise<void>((resolve, reject) => {
+        const onError = (error: NodeJS.ErrnoException) => {
+          server.off('listening', onListening);
+          reject(error);
+        };
+        const onListening = () => {
+          server.off('error', onError);
+          resolve();
+        };
+        server.once('error', onError);
+        server.once('listening', onListening);
+        server.listen(port, '0.0.0.0');
+      });
+      console.info(`Server running on http://localhost:${port}`);
+      return;
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== 'EADDRINUSE') throw error;
+      if (attempt === maxAttempts - 1) {
+        throw new Error(`Port ${port} is already in use. Stop the other server or set PORT to an available port.`);
+      }
+      console.warn(`Port ${port} is already in use; trying ${port + 1}...`);
+    }
+  }
 }
 
 startServer().catch((err) => {
