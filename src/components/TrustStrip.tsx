@@ -3,7 +3,7 @@ import { CalendarClock, ClipboardList, RefreshCw, Sliders } from 'lucide-react';
 const TRUST_ITEMS = [
   {
     icon: Sliders,
-    label: 'Coaching Tailored to You',
+    label: 'Coaching Tailored to Your Needs',
   },
   {
     icon: CalendarClock,
